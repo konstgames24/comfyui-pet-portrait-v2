@@ -1,0 +1,1317 @@
+{
+  "1": {
+    "inputs": {
+      "unet_name": "flux-2-klein-4b-fp8.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "FLUX.2 klein 4B"
+    }
+  },
+  "2": {
+    "inputs": {
+      "clip_name": "qwen_3_4b.safetensors",
+      "type": "flux2",
+      "device": "default"
+    },
+    "class_type": "CLIPLoader",
+    "_meta": {
+      "title": "Текстовый энкодер Qwen3 4B"
+    }
+  },
+  "3": {
+    "inputs": {
+      "vae_name": "flux2-vae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "VAE FLUX.2"
+    }
+  },
+  "4": {
+    "inputs": {
+      "bg_removal_name": "birefnet.safetensors"
+    },
+    "class_type": "LoadBackgroundRemovalModel",
+    "_meta": {
+      "title": "BiRefNet (вырезание)"
+    }
+  },
+  "51": {
+    "inputs": {
+      "clip_name": "qwen3vl_4b_fp8_scaled.safetensors",
+      "type": "ideogram4",
+      "device": "default"
+    },
+    "class_type": "CLIPLoader",
+    "_meta": {
+      "title": "Qwen3-VL 4B (описание фото)"
+    }
+  },
+  "5": {
+    "inputs": {
+      "image": "pet_cat.jpg"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Фото животного — загрузите сюда"
+    }
+  },
+  "55": {
+    "inputs": {
+      "prompt": "Find every animal in this image: cats, dogs, horses, rabbits, birds and any other pets. Output only JSON, a list with one entry per animal, each entry with \"bbox_2d\": [x1, y1, x2, y2] around the whole animal and \"label\"",
+      "max_length": 300,
+      "sampling_mode": "off",
+      "thinking": false,
+      "use_default_template": true,
+      "mtp": "auto",
+      "clip": [
+        "51",
+        0
+      ],
+      "image": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "TextGenerate",
+    "_meta": {
+      "title": "Поиск всех животных на фото"
+    }
+  },
+  "57": {
+    "inputs": {
+      "source": [
+        "55",
+        0
+      ]
+    },
+    "class_type": "PreviewAny",
+    "_meta": {
+      "title": "Превью: найденные животные"
+    }
+  },
+  "56": {
+    "inputs": {
+      "pad": 0.08,
+      "min_size": 0.2,
+      "max_animals": 6,
+      "image": [
+        "5",
+        0
+      ],
+      "boxes": [
+        "55",
+        0
+      ]
+    },
+    "class_type": "PetSplitAnimals",
+    "_meta": {
+      "title": "Каждое животное — отдельный портрет"
+    }
+  },
+  "6": {
+    "inputs": {
+      "bg_removal_model": [
+        "4",
+        0
+      ],
+      "image": [
+        "56",
+        0
+      ]
+    },
+    "class_type": "RemoveBackground",
+    "_meta": {
+      "title": "Маска животного"
+    }
+  },
+  "7": {
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "pad_factor": 1.1,
+      "grow_mask": 0,
+      "background": "#EFEBE6",
+      "images": [
+        "56",
+        0
+      ],
+      "masks": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "ImageCropToMask",
+    "_meta": {
+      "title": "Вырезать и обрезать по животному"
+    }
+  },
+  "8": {
+    "inputs": {
+      "images": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Превью: вырезанное животное"
+    }
+  },
+  "50": {
+    "inputs": {
+      "prompt": "Describe the animal in this photo for an artist who will paint its portrait. Write one English noun phrase of at most 70 words that covers only its permanent appearance: species, whether it is a puppy, kitten or adult, the breed only if it is unmistakable (for cats almost never: do not say Siamese, Ragdoll, Persian or similar), coat length and texture, the exact coat colors and where they are described in plain color words (say whether the face is light or dark, and do not use pattern names such as point, seal or lynx), distinctive markings and on which side of the face they are (patches, blaze, spots, stripes, freckles on the nose, dark fur on the muzzle), the exact color of the nose including any dark freckles or spots on it, and the eye color (one color for both eyes; mention two different colors only if the difference is obvious). Do not mention the ears at all, nor pose, background, people, toys, glasses, clothes or lighting. If there are several animals, pick the largest one and describe only that single animal; never mix features of different animals and never mention the others. Answer with the phrase only.",
+      "max_length": 160,
+      "sampling_mode": "off",
+      "thinking": false,
+      "use_default_template": true,
+      "mtp": "auto",
+      "clip": [
+        "51",
+        0
+      ],
+      "image": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "TextGenerate",
+    "_meta": {
+      "title": "Описание животного по фото (автоматически)"
+    }
+  },
+  "52": {
+    "inputs": {
+      "source": [
+        "50",
+        0
+      ]
+    },
+    "class_type": "PreviewAny",
+    "_meta": {
+      "title": "Превью: описание"
+    }
+  },
+  "27": {
+    "inputs": {
+      "color": "auto (по окрасу)",
+      "width": 896,
+      "height": 1120,
+      "seed": 0,
+      "image": [
+        "56",
+        0
+      ],
+      "mask": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "PetPastelPalette",
+    "_meta": {
+      "title": "Цвет фона: палитра из 24 пастельных тонов"
+    }
+  },
+  "32": {
+    "inputs": {
+      "value": "Paint a new portrait of the exact same animal as in the reference image. The animal:"
+    },
+    "class_type": "PrimitiveString",
+    "_meta": {
+      "title": "Промпт: начало"
+    }
+  },
+  "10": {
+    "inputs": {
+      "value": "Keep its species, breed, anatomy, ear shape, coat colors, fur pattern, markings, eye color and facial features exactly as in the reference image. Portrait composition: only the head and the upper chest, the animal faces the viewer frontally and looks directly into the camera with direct eye contact, symmetrical calm pose, perfectly centered horizontally, the muzzle and eyes are the focal point. Empty background above the ears. The chest fills the bottom of the picture and continues past the bottom edge, cropped by the frame, with no fade-out and no vignette at the bottom; the body does not touch the left and right edges. Background: a perfectly flat, smooth, uniform solid"
+    },
+    "class_type": "PrimitiveStringMultiline",
+    "_meta": {
+      "title": "Промпт: до цвета фона"
+    }
+  },
+  "11": {
+    "inputs": {
+      "value": "pastel color, no texture, no gradient, no objects, no floor, no shadow. Style: expressive hand-painted pet portrait in oil and gouache, at the intersection of a realistic portrait, decorative painting and minimalist design. Clearly visible confident brushstrokes: the fur is built from distinct painterly strokes that follow the direction of the hair, looser and broader on the body, finer on the face; soft airy tonal transitions between them. The eyes and nose are painted with crisp detail. At the outline the fur ends in loose painted wisps over the plain background, with no hard cut-out edge. Harmonious palette, soft diffused frontal lighting without harsh shadows. It must look painted by hand with a brush: not a photograph, no vector art, no flat cel shading, no outlines. No text, no letters, no signature, no frame."
+    },
+    "class_type": "PrimitiveStringMultiline",
+    "_meta": {
+      "title": "Промпт: после цвета фона (стиль)"
+    }
+  },
+  "33": {
+    "inputs": {
+      "delimiter": " ",
+      "string_a": [
+        "32",
+        0
+      ],
+      "string_b": [
+        "50",
+        0
+      ]
+    },
+    "class_type": "StringConcatenate",
+    "_meta": {
+      "title": "+ описание"
+    }
+  },
+  "34": {
+    "inputs": {
+      "delimiter": ". ",
+      "string_a": [
+        "33",
+        0
+      ],
+      "string_b": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "StringConcatenate",
+    "_meta": {
+      "title": "+ композиция"
+    }
+  },
+  "12": {
+    "inputs": {
+      "delimiter": " ",
+      "string_a": [
+        "34",
+        0
+      ],
+      "string_b": [
+        "27",
+        1
+      ]
+    },
+    "class_type": "StringConcatenate",
+    "_meta": {
+      "title": "+ цвет"
+    }
+  },
+  "13": {
+    "inputs": {
+      "delimiter": " ",
+      "string_a": [
+        "12",
+        0
+      ],
+      "string_b": [
+        "11",
+        0
+      ]
+    },
+    "class_type": "StringConcatenate",
+    "_meta": {
+      "title": "+ стиль"
+    }
+  },
+  "14": {
+    "inputs": {
+      "text": [
+        "13",
+        0
+      ],
+      "clip": [
+        "2",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Промпт"
+    }
+  },
+  "15": {
+    "inputs": {
+      "pixels": [
+        "7",
+        0
+      ],
+      "vae": [
+        "3",
+        0
+      ]
+    },
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "Животное -> латент-референс"
+    }
+  },
+  "16": {
+    "inputs": {
+      "conditioning": [
+        "14",
+        0
+      ],
+      "latent": [
+        "15",
+        0
+      ]
+    },
+    "class_type": "ReferenceLatent",
+    "_meta": {
+      "title": "Референс (позитив)"
+    }
+  },
+  "17": {
+    "inputs": {
+      "conditioning": [
+        "14",
+        0
+      ]
+    },
+    "class_type": "ConditioningZeroOut",
+    "_meta": {
+      "title": "Пустой негатив"
+    }
+  },
+  "18": {
+    "inputs": {
+      "conditioning": [
+        "17",
+        0
+      ],
+      "latent": [
+        "15",
+        0
+      ]
+    },
+    "class_type": "ReferenceLatent",
+    "_meta": {
+      "title": "Референс (негатив)"
+    }
+  },
+  "63": {
+    "inputs": {
+      "prompt": "Find the head of the main animal in this image, from the tips of the ears to the bottom of the chin. Output only its bounding box as JSON: \"bbox_2d\": [x1, y1, x2, y2]",
+      "max_length": 60,
+      "sampling_mode": "off",
+      "thinking": false,
+      "use_default_template": true,
+      "mtp": "auto",
+      "clip": [
+        "51",
+        0
+      ],
+      "image": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "TextGenerate",
+    "_meta": {
+      "title": "Где голова (крупный кадр морды)"
+    }
+  },
+  "64": {
+    "inputs": {
+      "pad": 0.1,
+      "size": 768,
+      "image": [
+        "7",
+        0
+      ],
+      "box": [
+        "63",
+        0
+      ]
+    },
+    "class_type": "PetCropToBox",
+    "_meta": {
+      "title": "Крупный кадр морды"
+    }
+  },
+  "65": {
+    "inputs": {
+      "pixels": [
+        "64",
+        0
+      ],
+      "vae": [
+        "3",
+        0
+      ]
+    },
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "Морда -> латент"
+    }
+  },
+  "66": {
+    "inputs": {
+      "conditioning": [
+        "16",
+        0
+      ],
+      "latent": [
+        "65",
+        0
+      ]
+    },
+    "class_type": "ReferenceLatent",
+    "_meta": {
+      "title": "+ морда (позитив)"
+    }
+  },
+  "67": {
+    "inputs": {
+      "conditioning": [
+        "18",
+        0
+      ],
+      "latent": [
+        "65",
+        0
+      ]
+    },
+    "class_type": "ReferenceLatent",
+    "_meta": {
+      "title": "+ морда (негатив)"
+    }
+  },
+  "19": {
+    "inputs": {
+      "cfg": 1.0,
+      "model": [
+        "1",
+        0
+      ],
+      "positive": [
+        "66",
+        0
+      ],
+      "negative": [
+        "67",
+        0
+      ]
+    },
+    "class_type": "CFGGuider",
+    "_meta": {
+      "title": "Guider (cfg 1)"
+    }
+  },
+  "20": {
+    "inputs": {
+      "noise_seed": 1
+    },
+    "class_type": "RandomNoise",
+    "_meta": {
+      "title": "Сид"
+    }
+  },
+  "21": {
+    "inputs": {
+      "sampler_name": "euler"
+    },
+    "class_type": "KSamplerSelect",
+    "_meta": {
+      "title": "Семплер"
+    }
+  },
+  "22": {
+    "inputs": {
+      "steps": 4,
+      "width": 896,
+      "height": 1120
+    },
+    "class_type": "Flux2Scheduler",
+    "_meta": {
+      "title": "4 шага (distilled)"
+    }
+  },
+  "23": {
+    "inputs": {
+      "width": 896,
+      "height": 1120,
+      "batch_size": 1
+    },
+    "class_type": "EmptyFlux2LatentImage",
+    "_meta": {
+      "title": "Холст 896x1120"
+    }
+  },
+  "24": {
+    "inputs": {
+      "noise": [
+        "20",
+        0
+      ],
+      "guider": [
+        "19",
+        0
+      ],
+      "sampler": [
+        "21",
+        0
+      ],
+      "sigmas": [
+        "22",
+        0
+      ],
+      "latent_image": [
+        "23",
+        0
+      ]
+    },
+    "class_type": "SamplerCustomAdvanced",
+    "_meta": {
+      "title": "Генерация портрета"
+    }
+  },
+  "25": {
+    "inputs": {
+      "samples": [
+        "24",
+        0
+      ],
+      "vae": [
+        "3",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "Декодирование"
+    }
+  },
+  "26": {
+    "inputs": {
+      "bg_removal_model": [
+        "4",
+        0
+      ],
+      "image": [
+        "25",
+        0
+      ]
+    },
+    "class_type": "RemoveBackground",
+    "_meta": {
+      "title": "Маска портрета"
+    }
+  },
+  "28": {
+    "inputs": {
+      "mode": "group (all on one image)",
+      "top_space": 0.2,
+      "bottom_padding": 0.0,
+      "bottom_fade": 0.2,
+      "max_width": 0.86,
+      "overlap": 0.15,
+      "max_aspect": 1.6,
+      "edge_softness": 4,
+      "seed": 0,
+      "head_height": 0.4,
+      "image": [
+        "62",
+        0
+      ],
+      "mask": [
+        "26",
+        0
+      ],
+      "canvas": [
+        "27",
+        0
+      ],
+      "head_box": [
+        "71",
+        0
+      ]
+    },
+    "class_type": "PetGroupLayout",
+    "_meta": {
+      "title": "Компоновка: вместе или по отдельности"
+    }
+  },
+  "71": {
+    "inputs": {
+      "prompt": "Find only the head of the animal in this image: from the tips of the ears down to the chin. Do not include the neck, the chest or the body. Output only its bounding box as JSON: \"bbox_2d\": [x1, y1, x2, y2]",
+      "max_length": 60,
+      "sampling_mode": "off",
+      "thinking": false,
+      "use_default_template": true,
+      "mtp": "auto",
+      "clip": [
+        "51",
+        0
+      ],
+      "image": [
+        "62",
+        0
+      ]
+    },
+    "class_type": "TextGenerate",
+    "_meta": {
+      "title": "Где голова на портрете (для компоновки)"
+    }
+  },
+  "72": {
+    "inputs": {
+      "source": [
+        "71",
+        0
+      ]
+    },
+    "class_type": "PreviewAny",
+    "_meta": {
+      "title": "Превью: голова на портрете"
+    }
+  },
+  "73": {
+    "inputs": {
+      "source": [
+        "69",
+        0
+      ]
+    },
+    "class_type": "PreviewAny",
+    "_meta": {
+      "title": "Превью: носы"
+    }
+  },
+  "74": {
+    "inputs": {
+      "source": [
+        "68",
+        0
+      ]
+    },
+    "class_type": "PreviewAny",
+    "_meta": {
+      "title": "Превью: нос на фото"
+    }
+  },
+  "62": {
+    "inputs": {
+      "strength": 0.8,
+      "brightness": 0.3,
+      "painting": [
+        "25",
+        0
+      ],
+      "painting_mask": [
+        "26",
+        0
+      ],
+      "photo": [
+        "56",
+        0
+      ],
+      "photo_mask": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "PetMatchColors",
+    "_meta": {
+      "title": "Цвета шерсти — как на фото"
+    }
+  },
+  "29": {
+    "inputs": {
+      "images": [
+        "25",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Превью: портрет FLUX.2 как есть"
+    }
+  },
+  "54": {
+    "inputs": {
+      "images": [
+        "28",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Превью: компоновка"
+    }
+  },
+  "39": {
+    "inputs": {
+      "ckpt_name": "sd_xl_base_1.0.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "SDXL для живописной фактуры"
+    }
+  },
+  "40": {
+    "inputs": {
+      "text": "expressive oil and gouache painting of a pet, fine art pet portrait, (visible painterly brushstrokes:1.3), (textured brushwork in the fur:1.2), loose confident strokes, painted wisps of fur at the edges, detailed eyes, airy tonal transitions, plain smooth flat pastel background, soft diffused frontal light",
+      "clip": [
+        "39",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Позитив: выраженные мазки"
+    }
+  },
+  "41": {
+    "inputs": {
+      "text": "hard outline, cut-out edge, sticker, blotchy patches, smooth airbrush, plastic, vector art, flat cel shading, clipart, 3d render, photo, photorealistic, (signature, artist name, text, letters:1.4), watermark, logo, frame, textured background, gradient background, harsh shadows, oversaturated, blurry, jpeg artifacts",
+      "clip": [
+        "39",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Негатив: вектор, фото, текст"
+    }
+  },
+  "42": {
+    "inputs": {
+      "upscale_method": "lanczos",
+      "scale_by": 1.5,
+      "image": [
+        "95",
+        0
+      ]
+    },
+    "class_type": "ImageScaleBy",
+    "_meta": {
+      "title": "Апскейл x1.5"
+    }
+  },
+  "43": {
+    "inputs": {
+      "pixels": [
+        "42",
+        0
+      ],
+      "vae": [
+        "39",
+        2
+      ]
+    },
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "-> латент"
+    }
+  },
+  "58": {
+    "inputs": {
+      "prompt": "Find the face of every animal in this image: the eyes, the nose and the mouth. Output only JSON, a list with one \"bbox_2d\": [x1, y1, x2, y2] per face",
+      "max_length": 200,
+      "sampling_mode": "off",
+      "thinking": false,
+      "use_default_template": true,
+      "mtp": "auto",
+      "clip": [
+        "51",
+        0
+      ],
+      "image": [
+        "95",
+        0
+      ]
+    },
+    "class_type": "TextGenerate",
+    "_meta": {
+      "title": "Где морда (для бережного прохода)"
+    }
+  },
+  "59": {
+    "inputs": {
+      "face_strength": 0.3,
+      "grow": 0.1,
+      "feather": 0.25,
+      "image": [
+        "42",
+        0
+      ],
+      "face_box": [
+        "58",
+        0
+      ]
+    },
+    "class_type": "PetFaceMask",
+    "_meta": {
+      "title": "Маска силы: морда слабее"
+    }
+  },
+  "60": {
+    "inputs": {
+      "strength": 1.0,
+      "model": [
+        "39",
+        0
+      ]
+    },
+    "class_type": "DifferentialDiffusion",
+    "_meta": {
+      "title": "Differential Diffusion"
+    }
+  },
+  "61": {
+    "inputs": {
+      "samples": [
+        "43",
+        0
+      ],
+      "mask": [
+        "93",
+        0
+      ]
+    },
+    "class_type": "SetLatentNoiseMask",
+    "_meta": {
+      "title": "Маска силы -> латент"
+    }
+  },
+  "44": {
+    "inputs": {
+      "seed": 42,
+      "steps": 20,
+      "cfg": 5.0,
+      "sampler_name": "dpmpp_2m_sde",
+      "scheduler": "karras",
+      "denoise": 0.48,
+      "model": [
+        "60",
+        0
+      ],
+      "positive": [
+        "40",
+        0
+      ],
+      "negative": [
+        "41",
+        0
+      ],
+      "latent_image": [
+        "61",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "Живописный проход (denoise = сила стиля)"
+    }
+  },
+  "45": {
+    "inputs": {
+      "samples": [
+        "44",
+        0
+      ],
+      "vae": [
+        "39",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "Декодирование (без тайлов: ровный фон)"
+    }
+  },
+  "68": {
+    "inputs": {
+      "prompt": "Find the nose of the animal in this image together with the mouth just below it. Output only its bounding box as JSON: \"bbox_2d\": [x1, y1, x2, y2]",
+      "max_length": 60,
+      "sampling_mode": "off",
+      "thinking": false,
+      "use_default_template": true,
+      "mtp": "auto",
+      "clip": [
+        "51",
+        0
+      ],
+      "image": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "TextGenerate",
+    "_meta": {
+      "title": "Где нос на фото"
+    }
+  },
+  "69": {
+    "inputs": {
+      "prompt": "Find the nose of every animal in this image together with the mouth just below it. Output only JSON, a list with one \"bbox_2d\": [x1, y1, x2, y2] per animal",
+      "max_length": 200,
+      "sampling_mode": "off",
+      "thinking": false,
+      "use_default_template": true,
+      "mtp": "auto",
+      "clip": [
+        "51",
+        0
+      ],
+      "image": [
+        "28",
+        0
+      ]
+    },
+    "class_type": "TextGenerate",
+    "_meta": {
+      "title": "Где носы на портрете"
+    }
+  },
+  "70": {
+    "inputs": {
+      "strength": 1.0,
+      "darkness": 0.72,
+      "max_spot": 0.06,
+      "pad": 0.3,
+      "painting": [
+        "28",
+        0
+      ],
+      "painting_noses": [
+        "69",
+        0
+      ],
+      "photo": [
+        "7",
+        0
+      ],
+      "photo_nose": [
+        "68",
+        0
+      ]
+    },
+    "class_type": "PetTransferSpots",
+    "_meta": {
+      "title": "Пятнышки на носу — с фото"
+    }
+  },
+  "30": {
+    "inputs": {
+      "filename_prefix": "pet_photo_portrait_feat2/portrait",
+      "images": [
+        "45",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Результат"
+    }
+  },
+  "85": {
+    "inputs": {
+      "bg_removal_model": [
+        "4",
+        0
+      ],
+      "image": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "RemoveBackground",
+    "_meta": {
+      "title": "Маска всех животных на фото"
+    }
+  },
+  "86": {
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "pad_factor": 1.1,
+      "grow_mask": 0,
+      "background": "#EFEBE6",
+      "images": [
+        "5",
+        0
+      ],
+      "masks": [
+        "85",
+        0
+      ]
+    },
+    "class_type": "ImageCropToMask",
+    "_meta": {
+      "title": "Все животные с фото (вырезка)"
+    }
+  },
+  "87": {
+    "inputs": {
+      "prompt": "Point to the eyes and the nose of every animal in this image. For each animal output three points: its left eye, its right eye and the tip of its nose. Output only JSON, a list of entries, each with \"point_2d\": [x, y] and \"label\" such as \"animal 1 left eye\", \"animal 1 right eye\", \"animal 1 nose\"",
+      "max_length": 400,
+      "sampling_mode": "off",
+      "thinking": false,
+      "use_default_template": true,
+      "mtp": "auto",
+      "clip": [
+        "51",
+        0
+      ],
+      "image": [
+        "86",
+        0
+      ]
+    },
+    "class_type": "TextGenerate",
+    "_meta": {
+      "title": "Глаза и нос каждого животного на фото"
+    }
+  },
+  "75": {
+    "inputs": {
+      "prompt": "Point to the eyes and the nose of every animal in this image. For each animal output three points: its left eye, its right eye and the tip of its nose. Output only JSON, a list of entries, each with \"point_2d\": [x, y] and \"label\" such as \"animal 1 left eye\", \"animal 1 right eye\", \"animal 1 nose\"",
+      "max_length": 400,
+      "sampling_mode": "off",
+      "thinking": false,
+      "use_default_template": true,
+      "mtp": "auto",
+      "clip": [
+        "51",
+        0
+      ],
+      "image": [
+        "70",
+        0
+      ]
+    },
+    "class_type": "TextGenerate",
+    "_meta": {
+      "title": "Глаза и нос каждого животного на портрете (до SDXL)"
+    }
+  },
+  "76": {
+    "inputs": {
+      "method": "dinov2",
+      "compare": "dinov2",
+      "sensitivity": 2.0,
+      "max_area": 0.12,
+      "size": 1024,
+      "min_aligned": 0.75,
+      "transform": "homography/ransac+tps(lam=0.1)",
+      "init": "auto",
+      "painting": [
+        "70",
+        0
+      ],
+      "photo": [
+        "86",
+        0
+      ],
+      "painting_head": [
+        "75",
+        0
+      ],
+      "photo_head": [
+        "87",
+        0
+      ]
+    },
+    "class_type": "PetFeatureMatch",
+    "_meta": {
+      "title": "Сравнение признаков с фото: что потерялось"
+    }
+  },
+  "81": {
+    "inputs": {
+      "painting": [
+        "70",
+        0
+      ],
+      "patch": [
+        "76",
+        0
+      ],
+      "mask": [
+        "76",
+        1
+      ],
+      "region": [
+        "76",
+        3
+      ]
+    },
+    "class_type": "PetFeatureUncrop",
+    "_meta": {
+      "title": "Вставка черт фото в портрет"
+    }
+  },
+  "88": {
+    "inputs": {
+      "extra_strength": 0.6,
+      "base": [
+        "59",
+        0
+      ],
+      "extra": [
+        "81",
+        1
+      ]
+    },
+    "class_type": "PetStrengthMerge",
+    "_meta": {
+      "title": "Сила SDXL: вставка сильнее морды"
+    }
+  },
+  "94": {
+    "inputs": {
+      "value": 0.05,
+      "mask": [
+        "28",
+        1
+      ]
+    },
+    "class_type": "ThresholdMask",
+    "_meta": {
+      "title": "Маска животных без «коробки» слабой альфы"
+    }
+  },
+  "95": {
+    "inputs": {
+      "protect": 4,
+      "feather": 8,
+      "limit": 0,
+      "image": [
+        "81",
+        0
+      ],
+      "mask": [
+        "94",
+        0
+      ],
+      "canvas": [
+        "28",
+        2
+      ]
+    },
+    "class_type": "PetFlattenBackground",
+    "_meta": {
+      "title": "Ровный фон ДО SDXL"
+    }
+  },
+  "89": {
+    "inputs": {
+      "expand": 6,
+      "tapered_corners": true,
+      "mask": [
+        "94",
+        0
+      ]
+    },
+    "class_type": "GrowMask",
+    "_meta": {
+      "title": "Маска животных + край шерсти"
+    }
+  },
+  "90": {
+    "inputs": {
+      "mask": [
+        "89",
+        0
+      ]
+    },
+    "class_type": "MaskToImage",
+    "_meta": {
+      "title": "Маска -> картинка"
+    }
+  },
+  "91": {
+    "inputs": {
+      "upscale_method": "bilinear",
+      "scale_by": 1.5,
+      "image": [
+        "90",
+        0
+      ]
+    },
+    "class_type": "ImageScaleBy",
+    "_meta": {
+      "title": "Маска x1.5 (под апскейл)"
+    }
+  },
+  "96": {
+    "inputs": {
+      "blur_radius": 12,
+      "sigma": 6.0,
+      "image": [
+        "91",
+        0
+      ]
+    },
+    "class_type": "ImageBlur",
+    "_meta": {
+      "title": "Мягкий край маски"
+    }
+  },
+  "92": {
+    "inputs": {
+      "channel": "red",
+      "image": [
+        "96",
+        0
+      ]
+    },
+    "class_type": "ImageToMask",
+    "_meta": {
+      "title": "Картинка -> маска"
+    }
+  },
+  "93": {
+    "inputs": {
+      "x": 0,
+      "y": 0,
+      "operation": "multiply",
+      "destination": [
+        "88",
+        0
+      ],
+      "source": [
+        "92",
+        0
+      ]
+    },
+    "class_type": "MaskComposite",
+    "_meta": {
+      "title": "Сила SDXL только на животных (фон не трогать)"
+    }
+  },
+  "82": {
+    "inputs": {
+      "images": [
+        "76",
+        2
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Превью: выравнивание, карты различий, маска"
+    }
+  },
+  "83": {
+    "inputs": {
+      "source": [
+        "76",
+        4
+      ]
+    },
+    "class_type": "PreviewAny",
+    "_meta": {
+      "title": "Превью: отчёт сравнения"
+    }
+  },
+  "84": {
+    "inputs": {
+      "images": [
+        "95",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Превью: портрет до SDXL со вставкой"
+    }
+  }
+}
