@@ -2,7 +2,8 @@
 Pet Feature Match - aligns the photo to the painted portrait (keypoint trackers, RAFT, DINOv2 / CLIP
     patch features), finds features of the photo that the painting lost and pastes them in;
 Pet Feature Uncrop - puts the repainted head crop back into the portrait;
-Pet Likeness Score - DINOv2 / CLIP similarity of the painted head and the photo head.
+Pet Likeness Score - DINOv2 / CLIP similarity of the painted head and the photo head;
+Pet Grounded Layout (grounded.py) - one or several animals, each bust always starts at the bottom edge.
 The work is done in featcore.py, reloaded on every run (experiment: edit and re-queue, no restart)."""
 import importlib
 import json
@@ -159,9 +160,13 @@ class PetLikenessScore:
         return {"ui": {"text": [text]}, "result": (text,)}
 
 
+from .grounded import PetGroundedLayout  # noqa: E402
+
 NODE_CLASS_MAPPINGS = {"PetFeatureMatch": PetFeatureMatch, "PetFeatureUncrop": PetFeatureUncrop,
-                       "PetLikenessScore": PetLikenessScore, "PetStrengthMerge": PetStrengthMerge}
-NODE_DISPLAY_NAME_MAPPINGS = {"PetFeatureMatch": "Pet Feature Match (experimental)",
+                       "PetLikenessScore": PetLikenessScore, "PetStrengthMerge": PetStrengthMerge,
+                       "PetGroundedLayout": PetGroundedLayout}
+NODE_DISPLAY_NAME_MAPPINGS = {"PetGroundedLayout": "Pet Grounded Layout (bust always on the bottom edge)",
+                              "PetFeatureMatch": "Pet Feature Match (experimental)",
                               "PetFeatureUncrop": "Pet Feature Uncrop (experimental)",
                               "PetStrengthMerge": "Pet Strength Merge (experimental)",
                               "PetLikenessScore": "Pet Likeness Score (experimental)"}
