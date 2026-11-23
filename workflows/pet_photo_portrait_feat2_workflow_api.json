@@ -598,14 +598,14 @@
     "inputs": {
       "mode": "group (all on one image)",
       "top_space": 0.2,
-      "bottom_padding": 0.0,
+      "head_height": 0.4,
+      "bottom_overflow": 0.04,
       "bottom_fade": 0.2,
       "max_width": 0.86,
       "overlap": 0.15,
       "max_aspect": 1.6,
       "edge_softness": 4,
-      "seed": 0,
-      "head_height": 0.4,
+      "fade_variant": 0,
       "image": [
         "62",
         0
@@ -623,9 +623,9 @@
         0
       ]
     },
-    "class_type": "PetGroupLayout",
+    "class_type": "PetGroundedLayout",
     "_meta": {
-      "title": "Компоновка: вместе или по отдельности"
+      "title": "Компоновка: каждое животное стоит на нижнем крае"
     }
   },
   "71": {

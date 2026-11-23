@@ -1719,7 +1719,7 @@
     },
     {
       "id": 28,
-      "type": "PetGroupLayout",
+      "type": "PetGroundedLayout",
       "pos": [
         1960,
         200
@@ -1781,22 +1781,22 @@
           "slot_index": 2
         }
       ],
-      "title": "Компоновка: вместе или по отдельности",
+      "title": "Компоновка: каждое животное стоит на нижнем крае",
       "properties": {
-        "Node name for S&R": "PetGroupLayout",
+        "Node name for S&R": "PetGroundedLayout",
         "aux_id": "konstgames24/comfyui-pet-portrait-v2"
       },
       "widgets_values": [
         "group (all on one image)",
         0.2,
-        0.0,
+        0.4,
+        0.04,
         0.2,
         0.86,
         0.15,
         1.6,
         4,
-        0,
-        0.4
+        0
       ],
       "color": "#232"
     },
